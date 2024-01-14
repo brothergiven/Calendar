@@ -91,8 +91,8 @@ public class MainFrame extends JFrame{
 		int row, col;
 		String task;
 		public void mouseClicked(MouseEvent e) {
-			p = e.getPoint();
 			if(e.getClickCount() == 2) {
+				p = e.getPoint();
 				col = tblCalendar.columnAtPoint(p);
 				row = tblCalendar.rowAtPoint(p);
 				task = JOptionPane.showInputDialog("Input Task");
