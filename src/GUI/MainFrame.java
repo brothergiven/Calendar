@@ -1,16 +1,18 @@
 package GUI;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.Calendar;
+
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class MainFrame extends JFrame{
 	static JPanel pnlCalendar, pnlTop;
-	
 	static JLabel lblMonth, lblYear;
 	static JButton btnPrev, btnNext;
 	static JTable tblCalendar;
@@ -21,6 +23,8 @@ public class MainFrame extends JFrame{
 	int currentMonth = 0;
 	static String[] Months = {"Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.", "Sep", "Oct.", "Nov.", "Dec." };
 	static String[] Days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+	String userHome = System.getProperty("user.home");
+	
 	public MainFrame() {
 		setTitle("Calendar");
 		setSize(500, 700);
@@ -29,7 +33,7 @@ public class MainFrame extends JFrame{
 		// GUI 전체를 담을 이 컨테이너 : BorderLayout		
 		thisContainer = getContentPane();
 		thisContainer.setLayout(new BorderLayout());
-		
+	
 		// 상단 패널
 		pnlTop = new JPanel();
 		pnlTop.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -68,11 +72,11 @@ public class MainFrame extends JFrame{
 
 	
 		refreshCalendar(currentMonth, currentYear);
-		pnlCalendar.add(pnlTop, BorderLayout.NORTH);
-		pnlCalendar.add(stblCalendar, BorderLayout.CENTER);
 		tblCalendar.addMouseListener(new MouseAdapter() {
+			FileWriter fw;
 			public void mouseClicked(MouseEvent e) {
 				if(e.getClickCount() == 2) {
+					File dest;
 					Point p = e.getPoint();
 					int row = tblCalendar.rowAtPoint(p);
 					int col = tblCalendar.columnAtPoint(p);
@@ -80,8 +84,17 @@ public class MainFrame extends JFrame{
 					System.out.println("DoubleClicked : "+row+","+col);
 					if(value != null) {
 						String str = JOptionPane.showInputDialog("Enter new value");
+						String fileName = currentYear+"."+currentMonth+"."+row+"."+col+".txt";
 						if(str != null) {
-							mtblCalendar.setValueAt(str, row, col);
+							try {
+								dest = new File(userHome+"\\desktop\\tasks\\"+fileName);
+								fw = new FileWriter(dest);
+								fw.write(str);
+								mtblCalendar.setValueAt(str, row, col);
+								fw.close();
+							} catch(IOException k) {
+								System.out.println("IOException Caught");
+							}
 						}
 					}
 				}
