@@ -3,6 +3,8 @@ package GUI;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import Manager.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -19,12 +21,7 @@ public class MainFrame extends JFrame{
 	static JScrollPane stblCalendar;
 	static DefaultTableModel mtblCalendar;
 	Container thisContainer;
-	int currentYear = 2024;
-	int currentMonth = 0;
-	static String[] Months = {"Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.", "Sep", "Oct.", "Nov.", "Dec." };
-	static String[] Days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-	String userHome = System.getProperty("user.home");
-	
+	CalendarTableManager ctm = new CalendarTableManager();
 	public MainFrame() {
 		setTitle("Calendar");
 		setSize(500, 700);
@@ -39,8 +36,8 @@ public class MainFrame extends JFrame{
 		pnlTop.setLayout(new FlowLayout(FlowLayout.CENTER));
 		
 		// 상단에 띄울 버튼과 년월
-		lblMonth = new JLabel(Integer.toString(currentYear));
-		lblYear = new JLabel(Months[currentMonth]);
+		lblMonth = new JLabel(ctm.getMonthText());
+		lblYear = new JLabel(ctm.getYearText());
 		btnPrev = new JButton("<<");
 		btnNext = new JButton(">>");
 		
@@ -51,55 +48,17 @@ public class MainFrame extends JFrame{
 		pnlTop.add(btnNext);
 		
 		// 달력 테이블을 위한 선언
-		mtblCalendar = new DefaultTableModel() { public boolean isCellEditable(int row, int col) {return false;}};
-		tblCalendar = new JTable(mtblCalendar);
+		tblCalendar = ctm.calendarTable;
 		stblCalendar = new JScrollPane(tblCalendar);
-		
-		// TableModel에 열 제목 추가 : Sun, Mon, ...
-		for(int i = 0; i < Days.length; i++)
-			mtblCalendar.addColumn(Days[i]);
-		
-		// 행 높이 60픽셀로 설정
-		tblCalendar.setRowHeight(60);
-		// 행 개수 6, 열 개수 7로 설정
-		mtblCalendar.setRowCount(6);
-		mtblCalendar.setColumnCount(7);
-		
-
+	
 		// 이전, 다음 버튼 액션리스너 추가
 		btnPrev.addActionListener(new Prev_Action());
 		btnNext.addActionListener(new Next_Action());
 
-	
-		refreshCalendar(currentMonth, currentYear);
-		tblCalendar.addMouseListener(new MouseAdapter() {
-			FileWriter fw;
-			public void mouseClicked(MouseEvent e) {
-				if(e.getClickCount() == 2) {
-					File dest;
-					Point p = e.getPoint();
-					int row = tblCalendar.rowAtPoint(p);
-					int col = tblCalendar.columnAtPoint(p);
-					Object value = tblCalendar.getValueAt(row, col);
-					System.out.println("DoubleClicked : "+row+","+col);
-					if(value != null) {
-						String str = JOptionPane.showInputDialog("Enter new value");
-						String fileName = currentYear+"."+currentMonth+"."+row+"."+col+".txt";
-						if(str != null) {
-							try {
-								dest = new File(userHome+"\\desktop\\tasks\\"+fileName);
-								fw = new FileWriter(dest);
-								fw.write(str);
-								mtblCalendar.setValueAt(str, row, col);
-								fw.close();
-							} catch(IOException k) {
-								System.out.println("IOException Caught");
-							}
-						}
-					}
-				}
-			}
-		});
+		
+		
+		
+		tblCalendar.addMouseListener(new CellSelected()); // 셀 선택 후 조작을 위한 Listener
 		
 		thisContainer.add(pnlTop, BorderLayout.NORTH);
 		thisContainer.add(stblCalendar, BorderLayout.CENTER);
@@ -109,47 +68,39 @@ public class MainFrame extends JFrame{
 	class Prev_Action implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(currentMonth == 0) {
-				currentYear--;
-				currentMonth = 11;
-			}
-			else currentMonth -= 1;
-			refreshCalendar(currentMonth, currentYear);
+			ctm.refreshTable(false);
+			lblMonth.setText(ctm.getMonthText());
+			lblYear.setText(ctm.getYearText());
 		}
 	}
 	class Next_Action implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(currentMonth == 11) {
-				currentYear++;
-				currentMonth = 0;
-			}
-			else currentMonth += 1;
-			refreshCalendar(currentMonth, currentYear);
+			ctm.refreshTable(true);
+			lblMonth.setText(ctm.getMonthText());
+			lblYear.setText(ctm.getYearText());
 		}
 	}
 	public static void main(String[] args) {
 		new MainFrame();
 	}
+
 	
-	public static void refreshCalendar(int month, int year) {
-		lblMonth.setText(Months[month]);
-		lblYear.setText(Integer.toString(year));
-		
-		for(int i = 0; i < 6; i++)
-			for(int j = 0; j < 7; j++)
-				mtblCalendar.setValueAt(null, i, j);
-		
-		int nod, som;
-		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
-		nod = cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH); // 출력하려는 달의 최대 일 수 저장
-		som = cal.get(GregorianCalendar.DAY_OF_WEEK); // 출력하려는 달의 첫 번째 요일 저장
-		
-		for(int i = 1; i <= nod; i++) {
-			int row = (i+som-2)/7;
-			int column = (i+som-2)%7;
-			mtblCalendar.setValueAt(i, row, column);
+	class CellSelected extends MouseAdapter {
+		Point p;
+		int row, col;
+		String task;
+		public void mouseClicked(MouseEvent e) {
+			p = e.getPoint();
+			if(e.getClickCount() == 2) {
+				col = tblCalendar.columnAtPoint(p);
+				row = tblCalendar.rowAtPoint(p);
+				task = JOptionPane.showInputDialog("Input Task");
+				if(task != null) {
+					ctm.writeTask(task, row, col);
+					tblCalendar.setValueAt(task, row, col);
+				}
+			}
 		}
-		
 	}
 }
