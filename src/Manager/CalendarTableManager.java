@@ -39,7 +39,7 @@ public class CalendarTableManager {
 		// 행 개수 6, 열 개수 7로 설정
 		tm.setRowCount(countRow);
 		tm.setColumnCount(countCol);
-		initTable();
+		refreshTable(currentYear, currentMonth);
 		
 		// 행 높이 60픽셀로 설정
 		calendarTable.setRowHeight(60);
@@ -54,7 +54,7 @@ public class CalendarTableManager {
 		currentMonth = month;
 		initTable();
 		// 텍스트 파일에서 task 정보 가져오는 코드 추가
-	//	readTask();
+		readTask();
 	}
 	public void refreshTable(boolean next) { // next가 true라면 현재 월의 다음 월, false라면 이전 월로 가서 refresh
 		if(next) {
@@ -109,21 +109,38 @@ public class CalendarTableManager {
 	public void readTask() {
 		// destDirectory에 있는 모든 파일 검사 혹은 모든 행, 렬 검사
 		File[] list = new File(destDirectory).listFiles();
+		StringTokenizer tokens;
+		FileReader bf;
 		int fileYear;
 		int fileMonth;
 		int fileRow;
 		int fileCol;
-		for(int i = 0; i < list.length; i++) {
-			String[] parts = list[i].getName().trim().split(".");
-			if(parts.length == 4) {
-				fileYear = Integer.parseInt(parts[0].trim());
-				fileMonth = Integer.parseInt(parts[1].trim());
-				if(fileYear != currentYear || fileMonth != currentMonth) continue;
-				fileRow = Integer.parseInt(parts[2].trim());
-				fileCol = Integer.parseInt(parts[3].trim());
-			} else {
-				System.out.println("Invalid FileName :"+list[i].getName());
+		String task;
+		try {
+			for(int i = 0; i < list.length; i++) {
+				task = "";
+				String[] parts = list[i].getName().split("\\.");
+				System.out.println("length of parts : " + parts.length);
+				if(parts.length == 5) {
+					bf = new FileReader(list[i]);
+					fileYear = Integer.parseInt(parts[0]);
+					fileMonth = Integer.parseInt(parts[1]);
+					if(fileYear != currentYear || fileMonth != currentMonth) continue;
+					fileRow = Integer.parseInt(parts[2]);
+					fileCol = Integer.parseInt(parts[3]);
+					int intVal;
+					while((intVal = bf.read()) != -1) {
+					    char c = (char) intVal;
+					    task = task + c;
+					}
+					tm.setValueAt(task, fileRow, fileCol);
+					bf.close();
+				} else {
+					System.out.println("Invalid FileName :"+list[i].getName());
+				}
 			}
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
