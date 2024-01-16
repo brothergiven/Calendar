@@ -1,0 +1,195 @@
+From 786600023087c661571e550085356126fd4d4645 Mon Sep 17 00:00:00 2001
+From: brothergiven <dung3740@gmail.com>
+Date: Sun, 14 Jan 2024 23:52:07 +0900
+Subject: [PATCH] =?UTF-8?q?2024/01/14=20=ED=85=8D=EC=8A=A4=ED=8A=B8=20?=
+ =?UTF-8?q?=ED=8C=8C=EC=9D=BC=EC=97=90=20=EA=B0=81=20=EB=82=A0=EC=A7=9C?=
+ =?UTF-8?q?=EB=B3=84=20Task=20=EC=9D=BD=EA=B3=A0=EC=93=B0=EB=8A=94=20?=
+ =?UTF-8?q?=EA=B8=B0=EB=8A=A5=20=EC=B6=94=EA=B0=80?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ bin/.gitignore                         |   2 ++
+ bin/GUI/MainFrame$CellSelected.class   | Bin 1440 -> 1440 bytes
+ bin/Manager/CalendarTableManager.class | Bin 5395 -> 5887 bytes
+ src/GUI/MainFrame.java                 |   2 +-
+ src/Manager/CalendarTableManager.java  |  41 +++++++++++++++++--------
+ 5 files changed, 32 insertions(+), 13 deletions(-)
+ create mode 100644 bin/.gitignore
+
+diff --git a/bin/.gitignore b/bin/.gitignore
+new file mode 100644
+index 0000000..962c23b
+--- /dev/null
++++ b/bin/.gitignore
+@@ -0,0 +1,2 @@
++/Manager/
++/GUI/
+diff --git a/bin/GUI/MainFrame$CellSelected.class b/bin/GUI/MainFrame$CellSelected.class
+index d2c9f48b8d33b745d2fcaaa3dd344db44aa7cdae..06eb20e2fe2eb485e51d85365cba022d349fb489 100644
+GIT binary patch
+delta 97
+zcmZ3$y?}ee1V%aD^wbjPoXq5G=ls&V5=I7Q4NXrj23ZDW9tIT#)yaK~Ds1XJ46F=n
+un{P0_Vp7xI#vsGGfFWKB$WYqKpr*BnK|^Z`gW5I*y{!x;Fy7=BEIR<d<{5MV
+
+delta 80
+zcmZ3$y?}ee1jfl57?lK+c^Ft3*ti&E8B}=~)ELw!_c4lXzQOp4Nli<88-vVN1|=Y+
+e!n%MVTx%19hSnAarELs)TNzAXyvZ+Eb^rhh(-h7C
+
+diff --git a/bin/Manager/CalendarTableManager.class b/bin/Manager/CalendarTableManager.class
+index f8c5e0a0607fa245a4b36ef81a4be0ecab4d1778..b0a9841fdf2aa070dfb39640b81a33a15092c034 100644
+GIT binary patch
+delta 2325
+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
+P8hIDu(#5sL^tS#7T!-Zi
+
+delta 1915
+zcmYjSYgANK6#n+ieasA(#|(`!f<P+CBOYR*@~}+H#ab?GB}ovi)r1owFt~<`Vo}(N
+zKlP(ro~+DL$%?GB#&l39%HEpv)ZSKT*+VPMo~F`1cSdW?nmcFj{hhtP{hfX8jOL46
+z*WR-OLjWr1lCUd7^`;V>O~EF!+J93^z=bZ{XJCz}RPW4KkBvGu5Zp`r%lw5c{$OKa
+zWzY;X20{jU@u)bePOKpqp}@_dK>K2AKS9l|tjt+RP*w!|AvRmvg63j2v+Hsex<J@$
+z;3;rTM=0Q5RPAqX=2$S$X%eW;g&u4*@GPDai?kftChpNPQ^VM9U<!5+G)~RAT?nJ!
+zz)tKEd$hEaFa{00fL#Q8W59G_J%$XtgqOt`ZFR-l213|JNReABbLRcm$pSOf6l^Th
+z@ea3OxtrPwuWD)ucwobOa@+f2pI+e@#)q=}e&KeE>;8z~`9HQM)MN%iE*!uo67(r+
+zl^v}SOI9Z79>C`YzQBG~W4YWQJzpC5O3I)%w6wLeX9S0J93mv2OJ6zv%Fc$sQnRTo
+zXy6+OO<c<5g60C#-_Tqg@;3yWXvPr(-{E`iy{&^K^qwz%bri}Xx0X5ZBPXt$pLsrG
+z=4^jQ<6;);7=G6AlOSix*k2?;eW~2n67;~16H<g<MUit2i*UxkS&WKdXJ&~D!$bzz
+zu#WL8d6mDF8z?8mAXWMlR<_kaI-h8P^g9i5QJnC(id}p<6mL)hC5kRr7AfMGYrM#c
+zn_}0=BbLO?($XnYrwkE}%cBd$!MOEP$2({ew@&qQ0`1La+tPZIN2c9D7ZKv9Ao?*o
+zO$TMO22@WD$`xCUF?6vwVoat&kr1D&Od+HTcYM02i$CGK3o0Kla7I)o95*6ZmAf5x
+zB$Y=X#C3^P6(^C8(<np{L&ijbxE~L&wHs-85Dp&UwQME8Hj39^(?J9zviBjZ6NeM0
+zO^Bii4`UsB(->RKzYKzdOHJR2M?`s2diOclCOj5{)p9vI!xD2-cVK#M+76WFGQTjp
+zY|IGoK;h@5+&~Fjn8qAREuNXtZ84sb&EpnNxq5<EHZHIUeX%lo7;S?XNm{6`;`~pF
+za(7imlnqder|}E}Ws4e=48!MSYqi+y&MMl{W23Yry?69@4^e88);oG=5aC+c6n{&V
+zemq~5?}#8$o}Z*gFd)vlvm7saRj(Go7Ln(<z9w45hDk9Yb(VOyMX&-Dc*P<;hnsuV
+z@=e2RR`_+MJC`Mt(kr+Ysd$4|DsDs)-sF{rwc?;B#Tlk-X8IQPh_jxwy1hWDI*4J(
+zuHB~&;9Z~}ACzi?I8f`;`tfn8;#2Y>_{^t7aIg;^X-Dw&Hhk;(A%dg)o0m3z0LKBg
+z!kii?!%U0_Gx@UE;Q{qH39l8aw`j@1s>g3k%g!eghu`rBlXfE)e=<%*7B~DC{$|pb
+zBOa&l4@afcI&8P=7)jt%{Bq<cj}0y7po4?=p6i1fh~V@*dr7y}hmJh2RvaNj$ev7E
+zgdC;1Pao1ZVy;iObHKinj0&Hw#FjJD<T-6b*?4(Y8^9Tge7YKomMA`5W|Nyr)INA+
+z`_cRZlw?WJqmft38|odsJB)5{e{v#AxC@|-=gj2(Ixrc_P=Mu_flkc93e?~hG~iZ7
+zbn(07Hh#UExCbk(sl6uJTx@C+v69^6;nrth1|@UM#u*Ce0!zyVegk-UrEn%Yjp^p4
+z%GaUGnhK4}-aup7)-5rwfI7--biSH8r7%BvK%<xiN7N%PEJu9OIqsa(f?3W}aND5J
+zIQG~mmE;A^gh~_mqEED*Su|A|lPx31dgf6+!{k3lhfKuz3#f>S;iIW+C`_Q^U%(8X
+A5C8xG
+
+diff --git a/src/GUI/MainFrame.java b/src/GUI/MainFrame.java
+index 6c8fd6c..ced078d 100644
+--- a/src/GUI/MainFrame.java
++++ b/src/GUI/MainFrame.java
+@@ -91,8 +91,8 @@ public class MainFrame extends JFrame{
+ 		int row, col;
+ 		String task;
+ 		public void mouseClicked(MouseEvent e) {
+-			p = e.getPoint();
+ 			if(e.getClickCount() == 2) {
++				p = e.getPoint();
+ 				col = tblCalendar.columnAtPoint(p);
+ 				row = tblCalendar.rowAtPoint(p);
+ 				task = JOptionPane.showInputDialog("Input Task");
+diff --git a/src/Manager/CalendarTableManager.java b/src/Manager/CalendarTableManager.java
+index 9a6a16c..9af783c 100644
+--- a/src/Manager/CalendarTableManager.java
++++ b/src/Manager/CalendarTableManager.java
+@@ -39,7 +39,7 @@ public class CalendarTableManager {
+ 		// 행 개수 6, 열 개수 7로 설정
+ 		tm.setRowCount(countRow);
+ 		tm.setColumnCount(countCol);
+-		initTable();
++		refreshTable(currentYear, currentMonth);
+ 		
+ 		// 행 높이 60픽셀로 설정
+ 		calendarTable.setRowHeight(60);
+@@ -54,7 +54,7 @@ public class CalendarTableManager {
+ 		currentMonth = month;
+ 		initTable();
+ 		// 텍스트 파일에서 task 정보 가져오는 코드 추가
+-	//	readTask();
++		readTask();
+ 	}
+ 	public void refreshTable(boolean next) { // next가 true라면 현재 월의 다음 월, false라면 이전 월로 가서 refresh
+ 		if(next) {
+@@ -109,21 +109,38 @@ public class CalendarTableManager {
+ 	public void readTask() {
+ 		// destDirectory에 있는 모든 파일 검사 혹은 모든 행, 렬 검사
+ 		File[] list = new File(destDirectory).listFiles();
++		StringTokenizer tokens;
++		FileReader bf;
+ 		int fileYear;
+ 		int fileMonth;
+ 		int fileRow;
+ 		int fileCol;
+-		for(int i = 0; i < list.length; i++) {
+-			String[] parts = list[i].getName().trim().split(".");
+-			if(parts.length == 4) {
+-				fileYear = Integer.parseInt(parts[0].trim());
+-				fileMonth = Integer.parseInt(parts[1].trim());
+-				if(fileYear != currentYear || fileMonth != currentMonth) continue;
+-				fileRow = Integer.parseInt(parts[2].trim());
+-				fileCol = Integer.parseInt(parts[3].trim());
+-			} else {
+-				System.out.println("Invalid FileName :"+list[i].getName());
++		String task;
++		try {
++			for(int i = 0; i < list.length; i++) {
++				task = "";
++				String[] parts = list[i].getName().split("\\.");
++				System.out.println("length of parts : " + parts.length);
++				if(parts.length == 5) {
++					bf = new FileReader(list[i]);
++					fileYear = Integer.parseInt(parts[0]);
++					fileMonth = Integer.parseInt(parts[1]);
++					if(fileYear != currentYear || fileMonth != currentMonth) continue;
++					fileRow = Integer.parseInt(parts[2]);
++					fileCol = Integer.parseInt(parts[3]);
++					int intVal;
++					while((intVal = bf.read()) != -1) {
++					    char c = (char) intVal;
++					    task = task + c;
++					}
++					tm.setValueAt(task, fileRow, fileCol);
++					bf.close();
++				} else {
++					System.out.println("Invalid FileName :"+list[i].getName());
++				}
+ 			}
++		} catch(IOException e) {
++			e.printStackTrace();
+ 		}
+ 	}
+ 	
+-- 
+2.43.0.windows.1
+

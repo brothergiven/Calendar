@@ -24,13 +24,13 @@ public class MainFrame extends JFrame{
 	CalendarTableManager ctm = new CalendarTableManager();
 	public MainFrame() {
 		setTitle("Calendar");
-		setSize(500, 700);
+		setSize(800, 700);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// GUI 전체를 담을 이 컨테이너 : BorderLayout		
 		thisContainer = getContentPane();
 		thisContainer.setLayout(new BorderLayout());
-	
+	    
 		// 상단 패널
 		pnlTop = new JPanel();
 		pnlTop.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -95,6 +95,7 @@ public class MainFrame extends JFrame{
 				p = e.getPoint();
 				col = tblCalendar.columnAtPoint(p);
 				row = tblCalendar.rowAtPoint(p);
+				if(row % 2 != 1) return;
 				task = JOptionPane.showInputDialog("Input Task");
 				if(task != null) {
 					ctm.writeTask(task, row, col);
