@@ -22,7 +22,7 @@ public class MainFrame extends JFrame {
 	static DefaultTableModel mtblCalendar;
 	Container thisContainer;
 	static CalendarTableManager ctm = new CalendarTableManager();
-
+	static WeeklyCalendarTableManager wc = new WeeklyCalendarTableManager();
 	public MainFrame() {
 		setTitle("Calendar");
 		setSize(1000, 700);
@@ -83,6 +83,7 @@ public class MainFrame extends JFrame {
 
 	public static void main(String[] args) {
 		new MainFrame();
+		new WeeklyCalendarFrame();
 	}
 
 	class CellSelected extends MouseAdapter {
