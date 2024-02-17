@@ -14,55 +14,45 @@ import java.util.*;
 import java.time.*;
 
 public class WeeklyCalendarFrame extends JFrame {
-    private WeeklyCalendarTableManager manager;
-    private JLabel yearAndMonthLabel;
+    private WeeklyTableManager weekly;
 
     public WeeklyCalendarFrame() {
-        manager = new WeeklyCalendarTableManager();
-        setSize(800, 600);
+    	weekly = new WeeklyTableManager();
+    	setTitle("Weekly Calendar");
+        setSize(1000, 700);		
+        setLocation(460, 190);
+        
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        JPanel panel = new JPanel(new BorderLayout());
-        JButton prevButton = new JButton("이전 주");
-        JButton nextButton = new JButton("다음 주");
-
+		setLayout(new BorderLayout());
+        
+        JButton prevButton = new JButton("<<");
+        JButton nextButton = new JButton(">>");
+        JLabel monthLabel = new JLabel(weekly.getMonthText());
+        JLabel yearLabel = new JLabel(weekly.getYearText());
+        
         prevButton.addActionListener(e -> {
-            manager.refreshTable(false);
-            updateYearAndMonthLabel();
-            updateTimeLabels();
+        	weekly.refreshTable(false);
+            monthLabel.setText(weekly.getMonthText());
+        	yearLabel.setText(weekly.getYearText());
         });
 
         nextButton.addActionListener(e -> {
-            manager.refreshTable(true);
-            updateYearAndMonthLabel();
-            updateTimeLabels();
+        	weekly.refreshTable(true);
+            monthLabel.setText(weekly.getMonthText());
+        	yearLabel.setText(weekly.getYearText());
         });
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
+        
         buttonPanel.add(prevButton);
+        buttonPanel.add(monthLabel);
+        buttonPanel.add(yearLabel);
         buttonPanel.add(nextButton);
+        
+        add(buttonPanel, BorderLayout.NORTH);
+        add(new JScrollPane(weekly.table), BorderLayout.CENTER);
 
-        yearAndMonthLabel = new JLabel();
-        updateYearAndMonthLabel();
-        buttonPanel.add(yearAndMonthLabel);
-
-        panel.add(buttonPanel, BorderLayout.NORTH);
-        panel.add(new JScrollPane(manager.calendarTable), BorderLayout.CENTER);
-
-        add(panel);
         setVisible(true);
-    }
-
-    private void updateYearAndMonthLabel() {
-        String yearText = manager.getYearText();
-        String monthText = String.format("%02d", manager.currentMonth + 1);
-        yearAndMonthLabel.setText(yearText + "년 " + monthText + "월");
-    }
-
-
-    private void updateTimeLabels() {
-        for (int i = 0; i < manager.countRow; i++) {
-            manager.tm.setValueAt(String.format("%02d:00 - %02d:00", i * 2, i * 2 + 2), i, 0);
-        }
     }
 }
