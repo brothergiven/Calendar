@@ -11,20 +11,20 @@ public class TaskInput extends JFrame {
 	Container c;
 	TextArea ta;
 	JButton confirm, cancel;
-	CalendarTableManager ctm;
+	TableManager manager;
 	JTable tblCalendar;
 	String task;
 	int row, col;
 
-	public TaskInput(CalendarTableManager ctm, JTable tblCalendar, int row, int col) throws IOException {
-		this.ctm = ctm; // ctm에서 task 가져옴
+	public TaskInput(TableManager manager, JTable tblCalendar, int row, int col) {
+		this.manager = manager; // ctm에서 task 가져옴
 		this.row = row;
 		this.col = col;
 		this.tblCalendar = tblCalendar;
-		setTitle(ctm.getDate(row, col));
+		setTitle(manager.getDate(row, col).toString());
 		setSize(500, 300);
 		
-		ta = new TextArea(ctm.getTask(row, col));
+		ta = new TextArea(manager.getTask(row, col));
 		c = getContentPane();
 		c.setLayout(new FlowLayout());
 		c.add(ta);
@@ -43,7 +43,7 @@ public class TaskInput extends JFrame {
 	class ConFirm_btn implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			task = ta.getText();
-			ctm.writeTask(task, row, col);
+			manager.writeTask(task,manager.getDate(row, col));
 			tblCalendar.setValueAt(task, row, col);
 			dispose();
 		}

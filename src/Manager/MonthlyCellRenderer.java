@@ -8,8 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-public class CustomCellRenderer extends JTextArea implements TableCellRenderer {
-    public CustomCellRenderer() {
+public class MonthlyCellRenderer extends JTextArea implements TableCellRenderer {
+    public MonthlyCellRenderer() {
         setLineWrap(true);
         setWrapStyleWord(true);
         setOpaque(true);
