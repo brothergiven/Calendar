@@ -7,11 +7,15 @@ import java.awt.Component;
 import java.time.*;
 
 import java.io.*;
-
+import java.util.*;
+// 현재 출력중인 주 파일만 읽어서 schedule 객체로 파싱 후 저장
 
 public class WeeklyTableManager extends TableManager {
 	public final int countRow = 13;
 	public final int countCol = 8;
+	
+	public LocalDate startOfWeek = showing.with(DayOfWeek.SUNDAY).minusWeeks(1);
+	public ArrayList<DailySchedule>[] schedules = new ArrayList[7]; // 그 주 7일의 스케줄 ArrayList
 
 	public WeeklyTableManager() {
 		tm.addColumn("Times");
@@ -20,7 +24,6 @@ public class WeeklyTableManager extends TableManager {
 
 		tm.setRowCount(countRow);
 		tm.setColumnCount(countCol);
-		refreshTable();
 
 		for (int i = 1; i < countRow; i++)
 			table.setRowHeight(i, 60);
@@ -28,59 +31,82 @@ public class WeeklyTableManager extends TableManager {
 		table.getTableHeader().setReorderingAllowed(false);
 		table.getTableHeader().setResizingAllowed(false);
 
-		table.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-					boolean hasFocus, int row, int column) {
-				if (row == 0)
-					return super.getTableCellRendererComponent(table, "", isSelected, hasFocus, row, column);
-				else
-					return super.getTableCellRendererComponent(table,
-							String.format("%02d:00 - %02d:00", (row - 1) * 2, (row - 1) * 2 + 2), isSelected, hasFocus,
-							row, column);
-			}
-		});
+		table.setDefaultRenderer(Object.class, new WeeklyCellRenderer());
+		readSchedule();
+		updateTable();
 	}
 
 	@Override
-	public void initTable() {
+	public void updateTable() {
 		for (int i = 0; i < countRow; i++)
 			for (int j = 0; j < countCol; j++)
 				tm.setValueAt(null, i, j);
-		
-		LocalDate startOfWeek = showing
-				.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SUNDAY));
+		startOfWeek = showing.with(DayOfWeek.SUNDAY).minusWeeks(1);
 
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 7; i++) { // 일 저장
 			LocalDate day = startOfWeek.plusDays(i);
 			tm.setValueAt(day.getDayOfMonth(), 0, i + 1);
 		}
-	}
-
-	
-	
-	@Override
-	public void writeTask(String task, LocalDate date) {
-		try {
-			File dest = new File(destDirectory + "/" + date.toString());
-			FileReader fr;
-			fr = new FileReader(dest);
-		} catch(IOException e) {
-			e.printStackTrace();
+		for (int i = 1; i <= 12; i++) { // 시간 저장
+			tm.setValueAt(String.format("Time %d\n %02d:00-%02d:00", i, (i - 1) * 2, i * 2), i, 0);
 		}
 
+		for (int i = 0; i < 7; i++) {
+			ArrayList<DailySchedule> list = schedules[i];
+			for (DailySchedule s : list) {
+				int col = i + 1;
+				for (int time = s.start; time < s.end; time++) {
+					int row = time + 1;
+					String value = (String) tm.getValueAt(row, col);
+					if (value == null)
+						value = s.name;
+					else {
+						value += "\n";
+						value += s.name;
+					}
+					tm.setValueAt(value, row, col);
+				}
+			}
+		}
 	}
 
+
+
 	@Override
-	public void readTask() {
-		// TODO Auto-generated method stub
+	public void readSchedule() {
+		// startOfWeek부터 시작하여서 7일 읽기
+		startOfWeek = showing.with(DayOfWeek.SUNDAY).minusWeeks(1);
+		LocalDate date;
+		for (int i = 0; i < 7; i++)
+			schedules[i] = new ArrayList<DailySchedule>();
+		for (int i = 0; i < 7; i++) {
+			date = startOfWeek.plusDays(i);
+			try {
+				File file = new File(destDirectory + "/" + date.toString()+".txt");
+				if (file.exists()) {
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String line;
+					while ((line = br.readLine()) != null) {
+						DailySchedule schedule = parseLine(line);
+						if (schedule != null) {
+							schedules[i].add(schedule);
+							System.out.println("schedule read : " + schedule.name);
+						}
+					}
+					br.close();
+				} else {
+					System.out.println("file doesn't exits : " + date.toString());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 
 	@Override
 	public LocalDate getDate(int row, int col) {
-		// TODO Auto-generated method stub
-		return null;
+		return startOfWeek.plusDays(col - 1);
 	}
 
 	@Override
@@ -91,19 +117,15 @@ public class WeeklyTableManager extends TableManager {
 
 	@Override
 	public void refreshTable(boolean next) {
-		if(next) {
+		if (next) {
 			showing = showing.plusWeeks(1);
 		} else {
 			showing = showing.minusWeeks(1);
 		}
-		initTable();
-		readTask();		
+		readSchedule();
+		updateTable();
 	}
 
-	@Override
-	public void refreshTable() {
-		initTable();
-		readTask();
-	}
+
 
 }

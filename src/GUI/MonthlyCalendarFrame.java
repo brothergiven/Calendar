@@ -1,20 +1,16 @@
-package Manager;
+package GUI;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
-import GUI.TaskInput;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import Manager.*;
+
 
 public class MonthlyCalendarFrame extends JFrame {
-	static MonthlyTableManager monthly = new MonthlyTableManager();
+	MonthlyTableManager monthly = new MonthlyTableManager();
 
 	public MonthlyCalendarFrame() {
 		setTitle("Monthly Calendar");
@@ -68,14 +64,7 @@ public class MonthlyCalendarFrame extends JFrame {
 				p = e.getPoint();
 				col = monthly.table.columnAtPoint(p);
 				row = monthly.table.rowAtPoint(p);
-				// TaskInput OPEN
-				// ctm에서 getTask, 새로 입력된 Task 반환하는 TASKINPUT 함수
-				// TaskINPUT 함수 내에서 writeTASK 호출
-				System.out.println("Cell Selected : " + row + ", " + col);
-				if (row % 2 != 1)
-					return;
-				new TaskInput((TableManager) monthly, monthly.table, row, col);
-
+				new DailyCalendarFrame(monthly.getDate(row, col));
 			}
 		}
 	}

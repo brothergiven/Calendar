@@ -10,6 +10,12 @@ public class MonthlyTableManager extends TableManager {
 	final int countRow = 12;
 	final int countCol = 7;
 
+	
+	public LocalDate startOfMonth = showing.withDayOfMonth(1);
+	public ArrayList<DailySchedule>[] schedules = new ArrayList [31];
+	
+	
+	
 	public MonthlyTableManager() {
 		table.setDefaultRenderer(Object.class, new MonthlyCellRenderer());
 
@@ -17,12 +23,13 @@ public class MonthlyTableManager extends TableManager {
 			tm.addColumn(Days[i]);
 		tm.setRowCount(countRow);
 		tm.setColumnCount(countCol);
-		refreshTable();
 		for (int i = 1; i < countRow; i += 2)
 			table.setRowHeight(i, 80);
 
 		table.getTableHeader().setReorderingAllowed(false);
 		table.getTableHeader().setResizingAllowed(false);
+		readSchedule();
+		updateTable();
 	}
 
 	@Override
@@ -32,17 +39,10 @@ public class MonthlyTableManager extends TableManager {
 		} else {
 			showing = showing.minusMonths(1);
 		}
-
-		initTable();
-		readTask();
-	}
-	@Override
-	public void refreshTable() {
-		initTable();
-		readTask();
+		readSchedule();
+		updateTable();
 	}
 	
-	@Override
 	public void initTable() {
 		// Row, Col 개수만큼 셀 생성
 		for (int i = 0; i < countRow; i++)
@@ -85,52 +85,65 @@ public class MonthlyTableManager extends TableManager {
 	}
 
 	@Override
-	public void writeTask(String task, LocalDate date) {
-		try {
-			File dest = new File(destDirectory + "/" + date.toString());
-			if (task.trim().equals("")) {
-				if (dest.exists()) {
-					System.gc();
-					dest.delete();
+	public void updateTable() {
+		initTable();
+		LocalDate startOfMonth = showing.withDayOfMonth(1);
+		int maxDays = getMaxDaysOfMonth(startOfMonth);
+		for(int i = 0; i < maxDays; i++) {
+			ArrayList<DailySchedule> list = schedules[i];
+			for(DailySchedule s : list) {
+				int row = getRowCol(s.date)[0];
+				int col = getRowCol(s.date)[1];
+				String value = (String) tm.getValueAt(row, col);
+				if(value == null)
+					value = s.getMonthlyLine();
+				else {
+					value += "\n";
+					value += s.getMonthlyLine();
 				}
-				return;
+				tm.setValueAt(value, row, col);
 			}
-			FileWriter fw = new FileWriter(dest);
-			fw.write(task);
-			System.out.println(date + " wrote");
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+			
 		}
+		
 	}
 
 	@Override
-	public void readTask() {
-		try {
-			File[] list = new File(destDirectory).listFiles();
-			int fileYear, fileMonth, fileDay;
-
-			for (int i = 0; i < list.length; i++) {
-				String[] parts = list[i].getName().split("-");
-				if (parts.length == 3) {
-					String task = "";
-					FileReader fr = new FileReader(list[i]);
-					fileYear = Integer.parseInt(parts[0]);
-					fileMonth = Integer.parseInt(parts[1]);
-					fileDay = Integer.parseInt(parts[2]);
-					if (fileYear != showing.getYear() || fileMonth != showing.getMonthValue())
-						continue;
-					int val;
-					while ((val = fr.read()) != -1) {
-						task += (char) val;
+	public void readSchedule() {
+		LocalDate startOfMonth = showing.withDayOfMonth(1);
+		LocalDate date;
+		int maxDays = getMaxDaysOfMonth(showing);
+		for (int i = 0; i < maxDays; i++)
+			schedules[i] = new ArrayList<DailySchedule>();
+		for (int i = 0; i < maxDays; i++) {
+			date = startOfMonth.plusDays(i);
+			try {
+				File file = new File(destDirectory + "/" + date.toString()+".txt");
+				if (file.exists()) {
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String line;
+					while ((line = br.readLine()) != null) {
+						DailySchedule schedule = parseLine(line);
+						schedule.date = date;
+						if (schedule != null) {
+							schedules[i].add(schedule);
+							System.out.println("schedule read : " + schedule.name + schedule.date);
+						}
 					}
-					int[] rowcol = getRowCol(LocalDate.of(fileYear, fileMonth, fileDay));
-					tm.setValueAt(task, rowcol[0], rowcol[1]);
+					br.close();
+				} else {
+					System.out.println("file doesn't exits : " + date.toString());
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
+
+	int getMaxDaysOfMonth(LocalDate date) {
+        return date.getMonth().length(date.isLeapYear());
+    }
+
+
 
 }
