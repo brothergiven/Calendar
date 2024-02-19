@@ -40,39 +40,29 @@ public abstract class TableManager {
 	public String getYearText() {
 		return Integer.toString(showing.getYear());
 	}
-
-
-
-	public String getTask(int row, int col) { // row, col에 해당하는 task 반환
-		try {
-			String task = "";
-			File dest = new File(
-					destDirectory + "/" + getDate(row, col).toString());
-			if (!dest.exists())
-				return task;
-			BufferedReader br = new BufferedReader(new FileReader(dest));
-			String tmp;
-			while ((tmp = br.readLine()) != null) {
-				task = task + tmp + "\r\n";
-			}
-			br.close();
-			return task;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	
 	abstract public void refreshTable(boolean next);
 	
-	abstract public void refreshTable();
+	public abstract void updateTable();
+
+	public abstract void readSchedule();
 	
-	public abstract void initTable();
-
-	public abstract void writeTask(String task, LocalDate date);
-
-	public abstract void readTask();
-
+	DailySchedule parseLine(String line) {
+		DailySchedule schedule = new DailySchedule(showing);
+		
+		String[] parts = line.split("%");
+		if (parts.length != 4)
+			return null;
+		schedule.name = parts[0];
+		schedule.content = parts[1];
+		schedule.start = Integer.parseInt(parts[2]);
+		parts[3] = parts[3].substring(0, parts[3].length()); //".txt"
+		schedule.end = Integer.parseInt(parts[3]);
+		System.out.println("Parsing Line OF " + showing + schedule);
+		return schedule;
+	}
+	
+	
 	public abstract LocalDate getDate(int row, int col);
 
 	public abstract int[] getRowCol(LocalDate date);
