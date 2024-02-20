@@ -12,7 +12,7 @@ import java.time.*;
 public abstract class TableManager {
 	// 달력 매니저, 테이블로 바꿔줌
 	// 주간 달력, 월간 달력으로 넘기기 위함
-	public LocalDate showing = LocalDate.now();
+	public static LocalDate showing = LocalDate.now(); // static
 	
 	public final int realYear = showing.getYear();
 	public final int realMonth = showing.getMonthValue() - 1;
@@ -46,6 +46,8 @@ public abstract class TableManager {
 	public abstract void updateTable();
 
 	public abstract void readSchedule();
+	
+	public abstract void refreshTable();
 	
 	DailySchedule parseLine(String line) {
 		DailySchedule schedule = new DailySchedule(showing);

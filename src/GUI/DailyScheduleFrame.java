@@ -30,7 +30,9 @@ public class DailyScheduleFrame extends JFrame {
 			startTime.addItem(time);
 			endTime.addItem(time);
 		}
-
+		startTime.setSelectedIndex(schedule.start);
+		endTime.setSelectedIndex(schedule.end);
+		
 		cancelButton = new JButton("취소");
 		cancelButton.addActionListener(e -> dispose());
 

@@ -1,10 +1,15 @@
 package Manager;
 
 import java.util.*;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.time.*;
 import javax.swing.*;
 import javax.swing.table.*;
+
+import GUI.DailyCalendarFrame;
 
 public class MonthlyTableManager extends TableManager {
 	final int countRow = 12;
@@ -13,7 +18,6 @@ public class MonthlyTableManager extends TableManager {
 	
 	public LocalDate startOfMonth = showing.withDayOfMonth(1);
 	public ArrayList<DailySchedule>[] schedules = new ArrayList [31];
-	
 	
 	
 	public MonthlyTableManager() {
@@ -25,11 +29,14 @@ public class MonthlyTableManager extends TableManager {
 		tm.setColumnCount(countCol);
 		for (int i = 1; i < countRow; i += 2)
 			table.setRowHeight(i, 80);
-
+		
+		table.setFillsViewportHeight(true);
 		table.getTableHeader().setReorderingAllowed(false);
 		table.getTableHeader().setResizingAllowed(false);
+		table.addMouseListener(new CellSelected());
 		readSchedule();
 		updateTable();
+
 	}
 
 	@Override
@@ -61,6 +68,12 @@ public class MonthlyTableManager extends TableManager {
 		}
 	}
 
+	@Override
+	public void refreshTable() {
+		readSchedule();
+		updateTable();
+	}
+	
 	@Override
 	public LocalDate getDate(int row, int col) {
 		GregorianCalendar cal = new GregorianCalendar(showing.getYear(), showing.getMonthValue() - 1, 1);
@@ -144,6 +157,18 @@ public class MonthlyTableManager extends TableManager {
         return date.getMonth().length(date.isLeapYear());
     }
 
+	class CellSelected extends MouseAdapter {
+		Point p;
+		int row, col;
 
+		public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2) {
+				p = e.getPoint();
+				col = table.columnAtPoint(p);
+				row = table.rowAtPoint(p);
+				new DailyCalendarFrame(getDate(row, col));
+			}
+		}
+	}
 
 }

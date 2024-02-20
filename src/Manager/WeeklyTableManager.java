@@ -3,7 +3,13 @@ package Manager;
 import javax.swing.*;
 import javax.swing.table.*;
 
+import GUI.DailyCalendarFrame;
+import Manager.MonthlyTableManager.CellSelected;
+
 import java.awt.Component;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.*;
 
 import java.io.*;
@@ -32,10 +38,19 @@ public class WeeklyTableManager extends TableManager {
 		table.getTableHeader().setResizingAllowed(false);
 
 		table.setDefaultRenderer(Object.class, new WeeklyCellRenderer());
+		table.addMouseListener(new CellSelected());
+		table.setFillsViewportHeight(true);
+		readSchedule();
+		updateTable();
+		
+	}
+	
+	@Override
+	public void refreshTable() {
 		readSchedule();
 		updateTable();
 	}
-
+	
 	@Override
 	public void updateTable() {
 		for (int i = 0; i < countRow; i++)
@@ -126,6 +141,19 @@ public class WeeklyTableManager extends TableManager {
 		updateTable();
 	}
 
-
+    class CellSelected extends MouseAdapter{
+    	Point p;
+    	int row, col; // row, col에 따른 date 반환해서
+    	
+    	public void mouseClicked(MouseEvent e) {
+    		if(e.getClickCount() == 2) {
+    			p = e.getPoint();
+    			col = table.columnAtPoint(p);
+    			row = table.rowAtPoint(p);
+    			new DailyCalendarFrame(getDate(row, col));
+    		}
+    		
+    	}
+    }
 
 }
